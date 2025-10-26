@@ -23,12 +23,12 @@ topology:
       startup-config: configs/spine1.conf
 
     ### minikube cluster ###
-    cluster1:
+    cluster01:
       kind: ext-container
       exec:
         - ip address add 192.168.1.11/24 dev eth1
         - ip route add 192.168.0.0/16 via 192.168.1.1
-    cluster1-m02:
+    cluster01-m02:
       kind: ext-container
       exec:
         - ip address add 192.168.1.12/24 dev eth1
@@ -54,8 +54,8 @@ topology:
     - endpoints: ["spine1:e1-2", "leaf2:e1-49"]
 
     #### minikube ####
-    - endpoints: ["leaf1:e1-1", "cluster1:eth1"]
-    - endpoints: ["leaf2:e1-1", "cluster1-m02:eth1"]
+    - endpoints: ["leaf1:e1-1", "cluster01:eth1"]
+    - endpoints: ["leaf2:e1-1", "cluster01-m02:eth1"]
 
     #### clients ####
     - endpoints: ["client1:eth1", "leaf1:e1-2"]
