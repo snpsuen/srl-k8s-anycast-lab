@@ -2,19 +2,13 @@ name: xrvk8s
 prefix: ""
 
 topology:
-  kinds:
-    srl:
-      image: ghcr.io/nokia/srlinux:23.7.1
-      type: ixrd2l
-    linux:
-      image: ghcr.io/hellt/network-multitool
 
   nodes:
     ### fabric ###
     xrvleaf1:
       kind: cisco_xrv
       startup-config: configs/xrvleaf1.cfg
-    xrvleaf1:
+    xrvleaf2:
       kind: cisco_xrv
       startup-config: configs/xrvleaf2.cfg
     xrvspine:
@@ -25,40 +19,36 @@ topology:
       kind: bridge
 
     ### minikube cluster ###
-    cluster01:
+    mkcluster:
       kind: ext-container
       exec:
-        - ip address add 192.168.1.11/24 dev eth1
-        - ip route add 192.168.0.0/16 via 192.168.1.1
-    cluster01-m02:
+        - ip address add 192.168.200.11/24 dev eth1
+        - ip route add 192.168.200.1/16 via 192.168.1.1
+    mkcluster-m02:
       kind: ext-container
       exec:
-        - ip address add 192.168.1.12/24 dev eth1
-        - ip route add 192.168.0.0/16 via 192.168.1.1
+        - ip address add 192.168.200.22/24 dev eth1
+        - ip route add 192.168.200.1/16 via 192.168.1.1
 
     ####  clients ###
-    client1:
+    client:
       kind: linux
+      image: ghcr.io/hellt/network-multitool
       binds:
         - configs/client-config.sh:/client-config.sh
       exec:
-        - bash /client-config.sh 192.168.2.11
-    client2:
-      kind: linux
-      binds:
-        - configs/client-config.sh:/client-config.sh
-      exec:
-        - bash /client-config.sh 192.168.2.12
+        - bash /client-config.sh 192.168.100.11
 
   links:
     ### #### fabric ### ####
-    - endpoints: ["spine1:e1-1", "leaf1:e1-49"]
-    - endpoints: ["spine1:e1-2", "leaf2:e1-49"]
+    - endpoints: ["xrvspine:eth2", "xrvleaf1:eth1"]
+    - endpoints: ["xrvspine:eth1", "xrvleaf2:eth1"]
 
     #### minikube ####
-    - endpoints: ["leaf1:e1-1", "cluster01:eth1"]
-    - endpoints: ["leaf2:e1-1", "cluster01-m02:eth1"]
+    - endpoints: ["xrvleaf2:eth2", "br-clab:eth1"]
+    - endpoints: ["mkcluster:eth1", "br-clab:eth2"]
+    - endpoints: ["mkcluster-m02:eth1", "br-clab:eth3"]
 
     #### clients ####
-    - endpoints: ["client1:eth1", "leaf1:e1-2"]
-    - endpoints: ["client2:eth1", "leaf2:e1-2"]
+    - endpoints: ["client1:eth1", "xrvleaf1:eth2"]
+
