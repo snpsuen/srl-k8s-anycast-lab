@@ -1,0 +1,64 @@
+name: xrvk8s
+prefix: ""
+
+topology:
+  kinds:
+    srl:
+      image: ghcr.io/nokia/srlinux:23.7.1
+      type: ixrd2l
+    linux:
+      image: ghcr.io/hellt/network-multitool
+
+  nodes:
+    ### fabric ###
+    xrvleaf1:
+      kind: cisco_xrv
+      startup-config: configs/xrvleaf1.cfg
+    xrvleaf1:
+      kind: cisco_xrv
+      startup-config: configs/xrvleaf2.cfg
+    xrvspine:
+      kind: cisco_xrv
+      image: vrnetlab/vr-xrv:6.1.2
+      startup-config: configs/xrvspine.cfg
+    br-clab:
+      kind: bridge
+
+    ### minikube cluster ###
+    cluster01:
+      kind: ext-container
+      exec:
+        - ip address add 192.168.1.11/24 dev eth1
+        - ip route add 192.168.0.0/16 via 192.168.1.1
+    cluster01-m02:
+      kind: ext-container
+      exec:
+        - ip address add 192.168.1.12/24 dev eth1
+        - ip route add 192.168.0.0/16 via 192.168.1.1
+
+    ####  clients ###
+    client1:
+      kind: linux
+      binds:
+        - configs/client-config.sh:/client-config.sh
+      exec:
+        - bash /client-config.sh 192.168.2.11
+    client2:
+      kind: linux
+      binds:
+        - configs/client-config.sh:/client-config.sh
+      exec:
+        - bash /client-config.sh 192.168.2.12
+
+  links:
+    ### #### fabric ### ####
+    - endpoints: ["spine1:e1-1", "leaf1:e1-49"]
+    - endpoints: ["spine1:e1-2", "leaf2:e1-49"]
+
+    #### minikube ####
+    - endpoints: ["leaf1:e1-1", "cluster01:eth1"]
+    - endpoints: ["leaf2:e1-1", "cluster01-m02:eth1"]
+
+    #### clients ####
+    - endpoints: ["client1:eth1", "leaf1:e1-2"]
+    - endpoints: ["client2:eth1", "leaf2:e1-2"]
