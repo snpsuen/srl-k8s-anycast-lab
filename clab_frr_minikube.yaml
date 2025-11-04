@@ -51,7 +51,7 @@ topology:
       kind: linux
       image: ghcr.io/hellt/network-multitool
       exec:
-        - ip delete default via 172.20.20.1
+        - ip route delete default via 172.20.20.1
         - ip addr add 192.168.100.11/24 dev eth1
         - ip route add default via 192.168.100.1
 
