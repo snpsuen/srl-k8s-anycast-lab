@@ -38,11 +38,13 @@ topology:
     mkcluster:
       kind: ext-container
       exec:
+        - ip route delete default via 192.168.49.1 dev eth0
         - ip address add 192.168.200.11/24 dev eth1
         - ip route add default via 192.168.200.1
     mkcluster-m02:
       kind: ext-container
       exec:
+        - ip route delete default via 192.168.49.1 dev eth0
         - ip address add 192.168.200.22/24 dev eth1
         - ip route add default via 192.168.200.1
 
