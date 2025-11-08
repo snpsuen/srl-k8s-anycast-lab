@@ -1,0 +1,18 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: bgp-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 172.20.20.100-172.20.20.110
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: frrleaf2-peer
+  namespace: metallb-system
+spec:
+  myASN: 65002
+  peerASN: 64999
+  peerAddress: 192.168.200.1
