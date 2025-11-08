@@ -5,7 +5,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    - 172.20.20.100-172.20.20.110
+    - 172.24.20.100-172.24.20.110
 ---
 apiVersion: metallb.io/v1beta2
 kind: BGPPeer
