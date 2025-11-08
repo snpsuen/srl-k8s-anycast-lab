@@ -16,3 +16,9 @@ spec:
   myASN: 65002
   peerASN: 64999
   peerAddress: 192.168.200.1
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: bgp-advert
+  namespace: metallb-system
