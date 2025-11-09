@@ -1,3 +1,5 @@
+# metallb-bgp-peers.yaml
+---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -7,19 +9,6 @@ spec:
   addresses:
     - 172.24.20.100-172.24.20.110
 ---
-apiVersion: metallb.io/v1beta2
-kind: BGPPeer
-metadata:
-  name: frrleaf2-peer
-  namespace: metallb-system
-spec:
-  myASN: 65002              # ASN of your minikube nodes / MetalLB speakers
-  peerASN: 64999            # ASN of your FRR leaf/spine fabric
-  peerAddress: 192.168.200.1  # IP of the FRR peer connected to Minikube
-  ebgpMultiHop: true          # (Optional, but recommended if L3 adjacency isn't direct)
-  holdTime: 180s
-  keepaliveTime: 60s
----
 apiVersion: metallb.io/v1beta1
 kind: BGPAdvertisement
 metadata:
@@ -28,4 +17,34 @@ metadata:
 spec:
   ipAddressPools:
     - bgp-pool
-  aggregationLength: 32
+# Each MetalLB speaker peers individually with frrleaf2
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: speaker-node1-peer
+  namespace: metallb-system
+spec:
+  myASN: 65101
+  peerASN: 65002
+  peerAddress: 192.168.200.1
+  sourceAddress: 192.168.200.11        # Node1's IP toward frrleaf2
+  ebgpMultiHop: false
+  holdTime: 90s
+  connectRetry: 10s
+  # keepaliveTime: 30s
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: speaker-node2-peer
+  namespace: metallb-system
+spec:
+  myASN: 65101
+  peerASN: 65002
+  peerAddress: 192.168.200.1
+  sourceAddress: 192.168.200.22        # Node2's IP toward frrleaf2
+  ebgpMultiHop: false
+  holdTime: 90s
+  connectRetry: 10s
+  # keepaliveTime: 30s
