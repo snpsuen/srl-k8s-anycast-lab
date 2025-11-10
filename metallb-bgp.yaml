@@ -17,34 +17,13 @@ metadata:
 spec:
   ipAddressPools:
     - bgp-pool
-# Each MetalLB speaker peers individually with frrleaf2
 ---
 apiVersion: metallb.io/v1beta2
 kind: BGPPeer
 metadata:
-  name: speaker-node1-peer
+  name: bgp-peer
   namespace: metallb-system
 spec:
   myASN: 65101
   peerASN: 65002
   peerAddress: 192.168.200.1
-  sourceAddress: 192.168.200.11        # Node1's IP toward frrleaf2
-  ebgpMultiHop: false
-  holdTime: 90s
-  # connectRetry: 10s
-  # keepaliveTime: 30s
----
-apiVersion: metallb.io/v1beta2
-kind: BGPPeer
-metadata:
-  name: speaker-node2-peer
-  namespace: metallb-system
-spec:
-  myASN: 65101
-  peerASN: 65002
-  peerAddress: 192.168.200.1
-  sourceAddress: 192.168.200.22        # Node2's IP toward frrleaf2
-  ebgpMultiHop: false
-  holdTime: 90s
-  # connectRetry: 10s
-  # keepaliveTime: 30s
