@@ -26,4 +26,4 @@ metadata:
 spec:
   myASN: 65101
   peerASN: 65002
-  peerAddress: 192.168.200.1
+  peerAddress: 192.168.49.101
