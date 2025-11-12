@@ -31,6 +31,7 @@ topology:
         - configs/vtysh.conf:/etc/frr/vtysh.conf
       exec:
         - sysctl -w net.ipv4.ip_forward=1
+        - ip route add 192.168.49.101/24 dev eth2
     br-clab:
       kind: bridge
       exec:
@@ -60,6 +61,6 @@ topology:
     - endpoints: ["frrspine:eth1", "frrleaf1:eth1"]
     - endpoints: ["frrspine:eth2", "frrleaf2:eth1"]
     - endpoints: ["frrleaf2:eth2", "br-clab:eth1"]
-    - endpoints: ["mkcluster:eth0", "br-clab:eth2"]
-    - endpoints: ["mkcluster-m02:eth0", "br-clab:eth3"]
+    - endpoints: ["mkcluster:eth1", "br-clab:eth2"]
+    - endpoints: ["mkcluster-m02:eth1", "br-clab:eth3"]
     - endpoints: ["client:eth1", "frrleaf1:eth2"]
