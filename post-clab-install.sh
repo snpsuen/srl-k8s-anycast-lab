@@ -12,5 +12,6 @@ network_id=$(docker network inspect -f {{.Id}} mkcluster)
 bridge_name="br-${network_id:0:12}"
 
 export MK_BRIDGE=$bridge_name
-envsubst '$MK_BRIDGE' < clab_frr_minikube_template.yaml | clab deploy -t -
-clab inspect -t clab_frr_minikube.yaml
+envsubst '$MK_BRIDGE' < clab_frr_minikube_template.yaml > clab_frr_minikube_inst.yaml
+clab deploy -t clab_frr_minikube_inst.yaml
+clab inspect -t clab_frr_minikube_inst.yaml
