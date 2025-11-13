@@ -34,8 +34,6 @@ topology:
       exec:
         - sysctl -w net.ipv4.ip_forward=1
         - ip route add 192.168.49.0/24 dev eth2
-      post-deploy:
-        - bash /postconnect.sh
 
     br-clab:
       kind: bridge
