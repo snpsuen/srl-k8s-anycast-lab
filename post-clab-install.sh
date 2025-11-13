@@ -8,9 +8,9 @@ minikube kubectl get nodes
 minikube kubectl describe node mkcluster | grep Taints
 minikube kubectl taint nodes mkcluster node-role.kubernetes.io/master:NoSchedule-
 
-sudo ip link add name br-clab type bridge
-sudo ip link set br-clab up
-ip link show type bridge
+network_id=$(docker network inspect -f {{.Id}} mkcluster)
+bridge_name="br-${network_id:0:12}"
 
-clab deploy -t clab_frr_minikube.yaml
+export MK_BRIDGE=$bridge_name
+envsubst '$MK_BRIDGE' < clab_frr_minikube_template.yaml | clab deploy -t -
 clab inspect -t clab_frr_minikube.yaml
