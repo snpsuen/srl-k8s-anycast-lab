@@ -35,11 +35,8 @@ topology:
         - sysctl -w net.ipv4.ip_forward=1
         - ip route add 192.168.49.0/24 dev eth2
 
-    br-clab:
+    $MK_BRIDGE:
       kind: bridge
-      exec:
-        - sysctl -w net.ipv4.ip_forward=1
-        - sysctl -w net.ipv4.conf.all.proxy_arp=1
 
     ### minikube cluster ###
     mkcluster:
@@ -64,7 +61,5 @@ topology:
   links:
     - endpoints: ["frrspine:eth1", "frrleaf1:eth1"]
     - endpoints: ["frrspine:eth2", "frrleaf2:eth1"]
-    - endpoints: ["frrleaf2:eth3", "br-clab:eth1"]
-    - endpoints: ["mkcluster:eth1", "br-clab:eth2"]
-    - endpoints: ["mkcluster-m02:eth1", "br-clab:eth3"]
+    - endpoints: ["frrleaf2:eth2", "$MK_BRIDGE:eth3"]
     - endpoints: ["client:eth1", "frrleaf1:eth2"]
